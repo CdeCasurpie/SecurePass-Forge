@@ -247,13 +247,18 @@
 
 
             // random word generator
-            getRandomWord = (length) => {
-                word = '';
+            getRandomWord = (length, base="") => {
+                word = "";
 
                 dictionary = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
                         'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 
                         'x', 'y', 'z', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'esa', 'eso', 'sal', 'sol', 'mar', 'poa', 'vil', 'mal', 'luz', 'casa', 'hola', 'luna', 'sola', 'copa', 'amor', 'vida', 'piso', 'cama', 'mesa', 'siro', 'ramo', 'palo', 'pila', 'pelo', 'piso', 'mando', 'mango', 'playa', 'techo', 'lápiz', 'árbol', 'coche', 'tigre', 'viento', 'nubes', 'serio', 'limón', 'rueda', 'cereza', 'manzana', 'pera', 'naranja', 'plátano', 'fresa', 'melón', 'sandía', 'piña', 'papaya', 'mango', 'coco', 'caramelo', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle'];
 
+                length -= base.length;
+                if (length <= 0) {
+                    length += base.length;
+                    return base.slice(0, length);
+                }
                 //desordenar el array
                 dictionary.sort(() => Math.random() - 0.5);
 
@@ -261,7 +266,7 @@
 
                 for (let i = 0; i < length; i++) {
                     if (dictionary[pivote].length == length){
-                        word = dictionary[pivote];
+                        word = base + dictionary[pivote];
                         return word;
                     }
 
@@ -272,19 +277,190 @@
                 }
 
                 //no se encontro una palabra con la longitud deseada
-                word = dictionary[pivote];
+                length += base.length;
+                word = base;
                 for (let i = word.length; i < length; i++) {
                     if (i % dictionary[pivote].length == 0) {
-                        pivote++;
-                        if (pivote >= dictionary.length) {
-                            pivote = 0;
-                        }
+                        pivote = Math.floor(Math.random() * dictionary.length);
                     }
                     word += dictionary[pivote][i % dictionary[pivote].length];
                 }
 
                 return word;
             }
+
+
+            // place lowercase
+            placeLowerCase = (word) => {
+                toLower = {
+                    "A": "a", "B": "b", "C": "c", "D": "d", "E": "e", "F": "f", "G": "g", "H": "h", "I": "i", "J": "j", "K": "k", "L": "l", "M": "m",
+                    "N": "n", "Ñ": "ñ", "O": "o", "P": "p", "Q": "q", "R": "r", "S": "s", "T": "t", "U": "u", "V": "v", "W": "w", "X": "x", "Y": "y",
+                    "Z": "z", 
+                    "4": "a", "8": "b", "(": "c", ")": "d", "3": "e", "=": "f", "6": "g", "#": "h", "!": "i", "¿": "j", "<": "k", "1": "l", "µ": "m",
+                    "ñ": "n", "n": "ñ", "0": "o", "9": "p", "¶": "q", "®": "r", "$": "s", "7": "t", "µ": "u", "√": "v", "ω": "w", "×": "x", "¥": "y",
+                    "2": "z",
+                    "a": "a", "b": "b", "c": "c", "d": "d", "e": "e", "f": "f", "g": "g", "h": "h", "i": "i", "j": "j", "k": "k", "l": "l", "m": "m",
+                    "n": "n", "ñ": "ñ", "o": "o", "p": "p", "q": "q", "r": "r", "s": "s", "t": "t", "u": "u", "v": "v", "w": "w", "x": "x", "y": "y",
+                    "z": "z",
+                }
+
+                word = word.split('');
+                index = Math.floor(Math.random() * word.length);
+
+                for (let i = 0; i < word.length; i++) {
+                    if (!toLower[word[index%word.length]]) {
+                        ++index;
+                    } else {
+                        word[index%word.length] = toLower[word[index%word.length]];
+                        break;
+                    }
+                }
+
+
+                word = word.join('');
+                return word;
+            }
+
+
+            // place uppercase
+            placeUpperCase = (word) => {
+                toUpper = {
+                    "a": "A", "b": "B", "c": "C", "d": "D", "e": "E", "f": "F", "g": "G", "h": "H", "i": "I", "j": "J", "k": "K", "l": "L", "m": "M",
+                    "n": "N", "ñ": "Ñ", "o": "O", "p": "P", "q": "Q", "r": "R", "s": "S", "t": "T", "u": "U", "v": "V", "w": "W", "x": "X", "y": "Y",
+                    "z": "Z", 
+                    "4": "A", "8": "B", "(": "C", ")": "D", "3": "E", "=": "F", "6": "G", "#": "H", "!": "I", "¿": "J", "<": "K", "1": "L", "µ": "M",
+                    "ñ": "N", "n": "Ñ", "0": "O", "9": "P", "¶": "Q", "®": "R", "$": "S", "7": "T", "µ": "U", "√": "V", "ω": "W", "×": "X", "¥": "Y",
+                    "2": "Z",
+                    "A": "A", "B": "B", "C": "C", "D": "D", "E": "E", "F": "F", "G": "G", "H": "H", "I": "I", "J": "J", "K": "K", "L": "L", "M": "M",
+                    "N": "N", "Ñ": "Ñ", "O": "O", "P": "P", "Q": "Q", "R": "R", "S": "S", "T": "T", "U": "U", "V": "V", "W": "W", "X": "X", "Y": "Y",
+                    "Z": "Z",
+                }
+
+                word = word.split('');
+                index = Math.floor(Math.random() * word.length);
+
+                for (let i = 0; i < word.length; i++) {
+                    if (!toUpper[word[index%word.length]]) {
+                        ++index;
+                    } else {
+                        word[index%word.length] = toUpper[word[index%word.length]];
+                        break;
+                    }
+                }
+
+                word = word.join('');
+                return word;
+            }
+
+
+            // place numbers
+            placeNumbers = (word) => {
+                toNumber = {
+                    "l": "1", "z": "2", "e": "3", "a": "4", "s": "5", "g": "6", "t": "7", "b": "8", "p": "9", "o": "0",
+                    "i": "1", "j": "2", "k": "3", "m": "4", "n": "5", "ñ": "6", "q": "7", "r": "8", "u": "9", "v": "0",
+                    "L": "1", "Z": "2", "E": "3", "A": "4", "S": "5", "G": "6", "T": "7", "B": "8", "P": "9", "O": "0",
+                    "I": "1", "J": "2", "K": "3", "M": "4", "N": "5", "Ñ": "6", "Q": "7", "R": "8", "U": "9", "V": "0",
+                    "1": "1", "2": "2", "3": "3", "4": "4", "5": "5", "6": "6", "7": "7", "8": "8", "9": "9", "0": "0",
+                }
+
+                word = word.split('');
+
+                index = Math.floor(Math.random() * word.length);
+                for (let i = 0; i < word.length; i++) {
+                    if (!toNumber[word[index % word.length]]) {
+                        ++index;
+                    } else {
+                        word[index % word.length] = toNumber[word[index % word.length]];
+                        break;
+                    }
+                }  
+
+                word = word.join('');
+                return word;
+            }
+
+
+            // place symbols
+            placeSymbols = (word) => {
+                toSymbol = {
+                    "a": "4", "b": "8", "c": "(", "d": ")", "e": "3", "f": "=", "g": "6", "h": "#", "i": "!", "j": "¿", "k": "<", "l": "1", "m": "µ",
+                    "n": "ñ", "ñ": "n", "o": "0", "p": "9", "q": "¶", "r": "®", "s": "$", "t": "7", "u": "µ", "v": "√", "w": "ω", "x": "×", "y": "¥",
+                    "z": "2", 
+                    "A": "4", "B": "8", "C": "(", "D": ")", "E": "3", "F": "=", "G": "6", "H": "#", "I": "!", "J": "¿", "K": "<", "L": "1", "M": "µ",
+                    "N": "ñ", "Ñ": "n", "O": "0", "P": "9", "Q": "¶", "R": "®", "S": "$", "T": "7", "U": "µ", "V": "√", "W": "ω", "X": "×", "Y": "¥",
+                    "Z": "2", 
+                    "0": "o", "1": "l", "2": "z", "3": "e", "4": "a", "5": "s", "6": "g", "7": "t", "8": "b", "9": "p",
+                    "o": "0", "l": "1", "z": "2", "e": "3", "a": "4", "s": "5", "g": "6", "t": "7", "b": "8", "p": "9",
+                    " ": "_", "_": " ",
+                }
+
+                word = word.split('');
+
+                index = Math.floor(Math.random() * word.length);
+                for (let i = 0; i < word.length; i++) {
+                    if (!toSymbol[word[index % word.length]]) {
+                        ++index;
+                    } else {
+                        word[index % word.length] = toSymbol[word[index % word.length]];
+                        break;
+                    }
+                }
+
+                word = word.join('');
+                return word;
+            }
+
+
+            // place spaces
+            placeSpaces = (word) => {
+                word = word.split('');
+
+                index = Math.floor(Math.random() * word.length);
+                word[index % word.length] = " ";
+
+                word = word.join('');
+                return word;
+            }
+
+            
+            // treat word
+            treatWord = (word, exclude, complex) => {
+                console.log(exclude);
+
+                if (exclude.lowercase) {
+                    console.log("lowercase");
+                    for (let i = 0; i < complex; i++) {
+                        word = placeLowerCase(word);
+                    }
+                }
+
+                if (exclude.uppercase) {
+                    for (let i = 0; i < complex; i++) {
+                        word = placeUpperCase(word);
+                    }
+                }
+
+                if (exclude.numbers) {
+                    for (let i = 0; i < complex; i++) {
+                        word = placeNumbers(word);
+                    }
+                }
+
+                if (exclude.symbols) {
+                    for (let i = 0; i < complex; i++) {
+                        word = placeSymbols(word);
+                    }
+                }
+
+                if (exclude.spaces) {
+                    for (let i = 0; i < complex/3; i++) {
+                        word = placeSpaces(word);
+                    }
+                }
+
+                return word;
+            }
+
 
             // generar contraseña
             const generate = document.getElementById('generate');
@@ -319,21 +495,11 @@
 
             function generatePassword(length, words, exclude, complex) {
 
-                // complex switch
-                if (complex == 0) {
+                word = getRandomWord(length, words);
 
-                } else if (complex == 1) {
-                    
-                } else if (complex == 2) {
+                word = treatWord(word, exclude, complex);
 
-                } else if (complex == 3) {
-                    
-                } else if (complex == 4) {
-                    
-                } else if (complex == 5) {
-                    
-                }
-                return getRandomWord(length);
+                return word;
             }
 
 
