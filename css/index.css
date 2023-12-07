@@ -1,0 +1,226 @@
+/* variables */
+:root {
+    --main-color: #1a1a1a;
+    --secondary-color: #2a2a2a;
+}
+
+/* general */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* header */
+header {
+    width: 100%;
+    height: 100px;
+    background-color: var(--main-color);
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.topBar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+}
+
+.logo {
+    width: 100px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo img {
+    width: 100%;
+    height: 100%;
+}
+
+.download {
+    width: 100px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.download a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.5em;
+}
+
+/* main */
+.main {
+    width: 100%;
+    background-color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    flex-grow: 1;
+}
+
+.top {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.top h1 {
+    margin-top: 50px;
+    color: white;
+    font-size: 3em;
+    margin-bottom: 50px;
+}
+
+.description {
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.description p {
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.generator {
+    margin: 50px 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.generator input[type="number"] {
+    width: 65px;
+    font-size: 2em;
+    text-align: center;
+}
+
+.generator input[type="number"]::-webkit-inner-spin-button,
+.generator input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+.generator input[type="text"] {
+    font-size: 2em;
+    text-align: center;
+}
+
+.generator button {
+    font-size: 2em;
+}
+
+#generate {
+    width: 60px;
+}
+
+#generate:hover {
+    background-color: rgba(0, 0, 0, .2);
+    color: rgba(255, 255, 255, .8);
+    border: 1px solid rgba(255, 255, 255, .0);
+}
+
+#copy {/* poner encima del input */
+    width: 60px;
+    background: none;
+    border: none;
+    margin-left: -60px;
+    text-align: center;
+    color: rgba(0, 0, 0, .5);
+    transition: .5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#copy button{
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    padding: 5px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(0, 0, 0, .8);
+}
+
+#copy button:hover {
+    background-color: rgba(0, 0, 0, .8);
+    color: rgba(255, 255, 255, .8);
+    border: 1px solid rgba(255, 255, 255, .0);
+    
+}
+
+/* footer */
+
+footer {
+    width: 100%;
+    height: 100px;
+    background-color: var(--main-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.creator {
+    width: 100px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.creator p {
+    color: white;
+    font-size: 1.5em;
+}
+
+.creator p a {
+    text-decoration: none;
+    color: white;
+}
+
+.social-medias {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.social-medias a {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px;
+}
+
+.social-medias a img {
+    width: 100%;
+    height: 100%;
+}
