@@ -2,6 +2,8 @@
     <head>
         <title>SecurePass-Forge</title>
         <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="css/canvas.css">
+        <link rel="icon" href="assets/favicon.png">
     </head>
     <body>
         <!-- generador de contraseñas -->
@@ -9,20 +11,22 @@
             <!-- barra con logo y boton para descargar -->
             <div class="topBar">
                 <div class="logo">
-                    <img src="img/logo.png" alt="logo">
+                    <h1>SecurePass-Forge</h1>
+                    <p>Generate a secure inmmutable password</p>
                 </div>
                 <div class="download">
-                    <a href="#">Download</a>
+                    <a class="secondary-color" href="#">Download</a>
                 </div>
             </div>
         </header>
         
         <section class="main">
+            <canvas id="background"></canvas>
             <div class="top">    
-                <h1>SecurePass-Forge</h1>
+                <h1>Generate your <span class="secondary-color">password</span> now!</h1>
                 <div class="description">
                     <p>
-                        Generate a secure password with the length you want, with the words you want, and with the characters you want and with the security you want.
+                        Just click on the button below.
                     </p>
                 </div>
             </div>
@@ -30,7 +34,7 @@
                 <!-- length -->
                 <input type="number" min="1" max="100" value="8">
                 <!-- output preview -->
-                <input type="text" disabled>
+                <input type="text" id="output" placeholder="password here ..." readonly>
                 <!-- copy button -->
                 <div id="copy">
                     <button id="copy-btn">[ ]</button>
@@ -40,11 +44,20 @@
             </div>
             <div class="configurations">
                 <!-- words to include -->
-                <input type="text">
+                <div class="option">
+                    <label for="words">Words to include:</label>
+                    <input type="text" id="words">
+                </div>
                 <!-- characters to exclude -->
-                <input type="text">
+                <div class="option">
+                    <label for="exclude">Characters to exclude:</label>
+                    <input type="text" id="exclude">
+                </div>
                 <!-- security level -->
-                <input type="range" min="0" max="5" value="5" step="1">
+                <div class="option">
+                    <label for="security">Security level:</label>
+                    <input type="range" min="0" max="5" value="5" step="1" id="security">
+                </div>
             </div>
         </section>
 
@@ -62,5 +75,144 @@
                 <a href="https://www.instagram.com/cesar_perales_20" target="_blank"><img src="assets/instagram.png" alt="instagram"></a>
             </div>
         </footer>
+
+        <script>
+            const background = document.getElementById("background");
+            const backCtx = background.getContext("2d");
+
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            background.width = width;
+            background.height = height;
+
+            const colorYellow = "#f5c518";
+
+            let lines = [];
+
+            class Line {
+                constructor(x, y, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.speed = 1 * Math.random() + 1;
+                    this.width = 7;
+                }
+
+                update() {
+                    this.y += this.speed;
+                    this.x += this.speed;
+                    if (this.y > height) {
+                        this.y = 0;
+                        this.width = 7;
+                    }
+                    if (this.x > width) {
+                        this.x = 0;
+                        this.width = 7;
+                    }
+                }
+
+                draw() {
+                    backCtx.beginPath();
+                    backCtx.moveTo(this.x, this.y);
+                    backCtx.lineTo(this.x + this.width, this.y + this.width);
+                    backCtx.strokeStyle = this.color;
+                    backCtx.stroke();
+                    backCtx.closePath();
+                }
+            }
+
+            function init() {
+                for (let i = 0; i < 100; i++) {
+                    let x = Math.random() * width;
+                    let y = Math.random() * height;
+                    let color = colorYellow;
+                    lines.push(new Line(x, y, color));
+                }
+            }
+
+            function animate() {
+                backCtx.clearRect(0, 0, width, height);
+                requestAnimationFrame(animate);
+
+                for (let i = 0; i < lines.length; i++) {
+                    lines[i].update();
+                    lines[i].draw();
+                }
+            }
+
+            init();
+
+            animate();
+
+            
+        </script>
+
+        <script>
+            // cambiar color del range segun su valor
+            const range = document.getElementById('security');
+            range.addEventListener('input', () => {
+                const value = range.value;
+                const color = `linear-gradient(90deg, rgb(255, 0, 0) ${value * 20}%, rgb(255, 255, 255) ${value * 20}%)`;
+                range.style.background = color;
+            });
+
+            // generar contraseña
+            const generate = document.getElementById('generate');
+            generate.addEventListener('click', () => {
+                const length = document.querySelector('.generator input[type="number"]').value;
+                const words = document.getElementById('words').value;
+                const exclude = document.getElementById('exclude').value;
+                const security = document.getElementById('security').value;
+                const output = document.querySelector('.generator input[type="text"]');
+                output.value = generatePassword(length, words, exclude, security);
+            });
+
+            // copiar contraseña
+            const copy = document.getElementById('copy-btn');
+
+            function copiarAlPortapapeles(texto) {
+                // Crea un elemento de texto temporal
+                const elementoTemporal = document.createElement('textarea');
+                
+                // Asigna el texto a ese elemento
+                elementoTemporal.value = texto;
+                
+                // Asegúrate de que el elemento no sea visible
+                elementoTemporal.style.position = 'absolute';
+                elementoTemporal.style.left = '-9999px';
+                
+                // Añade el elemento al DOM
+                document.body.appendChild(elementoTemporal);
+                
+                // Selecciona y copia el texto
+                elementoTemporal.select();
+                document.execCommand('copy');
+                
+                // Elimina el elemento temporal
+                document.body.removeChild(elementoTemporal);
+            }
+
+            copy.addEventListener('click', () => {
+                const output = document.querySelector('.generator input[type="text"]');
+                copiarAlPortapapeles(output.value);
+
+                copy.innerHTML = '✓';
+                setTimeout(() => {
+                    copy.innerHTML = '[ ]';
+                }, 1000);
+
+
+            });
+
+            // funcion para generar contraseña
+
+            function generatePassword(length, words, exclude, security) {
+                console.log(length, words, exclude, security);
+                return 'password';
+            }
+
+
+        </script>
     </body>
 </html>
