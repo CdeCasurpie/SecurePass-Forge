@@ -4,6 +4,45 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <link rel="stylesheet" type="text/css" href="css/canvas.css">
         <link rel="icon" href="assets/favicon.png">
+        <style>
+            .check {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: wrap;
+                width: 500px;
+                justify-content: flex-end;
+
+            }
+
+            .check input[type="checkbox"] {
+                display: none;
+            }
+
+            .check label {
+                width: auto;
+                color: #fff;
+                font-size: 1rem;
+                padding: 0.4rem;
+                border-radius: 5px;
+                background: none;
+                border: 1px solid #fff;
+                cursor: pointer;
+                transition: 0.3s;
+                margin: 5px;
+            }
+
+            .check label:hover {
+                opacity: 0.7;
+                color: #000;
+                border: 1px solid #000;
+            }
+
+            .check input[type="checkbox"]:checked + label {
+                background: var(--secondary-color);
+                color: #000;
+            }
+        </style>
     </head>
     <body>
         <!-- generador de contraseñas -->
@@ -32,7 +71,7 @@
             </div>
             <div class="generator">
                 <!-- length -->
-                <input type="number" min="1" max="100" value="8">
+                <input type="number" min="1" max="100" value="8" id="length">
                 <!-- output preview -->
                 <input type="text" id="output" placeholder="password here ..." readonly>
                 <!-- copy button -->
@@ -48,15 +87,31 @@
                     <label for="words">Words to include:</label>
                     <input type="text" id="words">
                 </div>
+                <!-- complex level -->
+                <div class="option">
+                    <label for="complex">Complexity level:</label>
+                    <input type="range" min="0" max="5" value="5" step="1" id="complex">
+                </div>
                 <!-- characters to exclude -->
                 <div class="option">
-                    <label for="exclude">Characters to exclude:</label>
-                    <input type="text" id="exclude">
-                </div>
-                <!-- security level -->
-                <div class="option">
-                    <label for="security">Security level:</label>
-                    <input type="range" min="0" max="5" value="5" step="1" id="security">
+                    <label for="exclude">Characters type:</label>
+                    <!-- check -->
+                    <div class="check">
+                        <input type="checkbox" id="lowercase" checked>
+                        <label for="lowercase">Lowercase</label>
+
+                        <input type="checkbox" id="uppercase" checked>
+                        <label for="uppercase">Uppercase</label>
+
+                        <input type="checkbox" id="numbers">
+                        <label for="numbers">Numbers</label>
+
+                        <input type="checkbox" id="symbols">
+                        <label for="symbols">Symbols</label>
+
+                        <input type="checkbox" id="spaces">
+                        <label for="spaces">Spaces</label>
+                    </div>
                 </div>
             </div>
         </section>
@@ -149,29 +204,26 @@
         </script>
 
         <script>
-            // cambiar color del range segun su valor
-            const range = document.getElementById('security');
-            range.addEventListener('input', () => {
-                const value = range.value;
-                const color = `linear-gradient(90deg, rgb(255, 0, 0) ${value * 20}%, rgb(255, 255, 255) ${value * 20}%)`;
-                range.style.background = color;
-            });
+            // characters to exclude
+            getExclude = () => {
+                const lowercase = document.getElementById('lowercase');
+                const uppercase = document.getElementById('uppercase');
+                const numbers = document.getElementById('numbers');
+                const symbols = document.getElementById('symbols');
+                const spaces = document.getElementById('spaces');
 
-            // generar contraseña
-            const generate = document.getElementById('generate');
-            generate.addEventListener('click', () => {
-                const length = document.querySelector('.generator input[type="number"]').value;
-                const words = document.getElementById('words').value;
-                const exclude = document.getElementById('exclude').value;
-                const security = document.getElementById('security').value;
-                const output = document.querySelector('.generator input[type="text"]');
-                output.value = generatePassword(length, words, exclude, security);
-            });
+                exclude = {
+                    lowercase: lowercase.checked,
+                    uppercase: uppercase.checked,
+                    numbers: numbers.checked,
+                    symbols: symbols.checked,
+                    spaces: spaces.checked
+                }
+                return exclude;
+            }
 
-            // copiar contraseña
-            const copy = document.getElementById('copy-btn');
-
-            function copiarAlPortapapeles(texto) {
+            // copy to clipboard
+            copiarAlPortapapeles = (texto) => {
                 // Crea un elemento de texto temporal
                 const elementoTemporal = document.createElement('textarea');
                 
@@ -193,23 +245,95 @@
                 document.body.removeChild(elementoTemporal);
             }
 
-            copy.addEventListener('click', () => {
+
+            // random word generator
+            getRandomWord = (length) => {
+                word = '';
+
+                dictionary = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
+                        'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 
+                        'x', 'y', 'z', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'ya', 'le', 'tu', 'yo', 'el', 'la', 'si', 'no', 'se', 'te', 'mi', 'tu', 'el', 'la', 'lo', 'me', 'se', 'si', 'no', 'esa', 'eso', 'sal', 'sol', 'mar', 'poa', 'vil', 'mal', 'luz', 'casa', 'hola', 'luna', 'sola', 'copa', 'amor', 'vida', 'piso', 'cama', 'mesa', 'siro', 'ramo', 'palo', 'pila', 'pelo', 'piso', 'mando', 'mango', 'playa', 'techo', 'lápiz', 'árbol', 'coche', 'tigre', 'viento', 'nubes', 'serio', 'limón', 'rueda', 'cereza', 'manzana', 'pera', 'naranja', 'plátano', 'fresa', 'melón', 'sandía', 'piña', 'papaya', 'mango', 'coco', 'caramelo', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle', 'chocolate', 'galleta', 'pastel', 'tarta', 'helado', 'caramelo', 'chicle'];
+
+                //desordenar el array
+                dictionary.sort(() => Math.random() - 0.5);
+
+                pivote = Math.floor(Math.random() * dictionary.length);
+
+                for (let i = 0; i < length; i++) {
+                    if (dictionary[pivote].length == length){
+                        word = dictionary[pivote];
+                        return word;
+                    }
+
+                    pivote++;
+                    if (pivote >= dictionary.length) {
+                        pivote = 0;
+                    }
+                }
+
+                //no se encontro una palabra con la longitud deseada
+                word = dictionary[pivote];
+                for (let i = word.length; i < length; i++) {
+                    if (i % dictionary[pivote].length == 0) {
+                        pivote++;
+                        if (pivote >= dictionary.length) {
+                            pivote = 0;
+                        }
+                    }
+                    word += dictionary[pivote][i % dictionary[pivote].length];
+                }
+
+                return word;
+            }
+
+            // generar contraseña
+            const generate = document.getElementById('generate');
+
+            generate.addEventListener('click', () => {
+                const length = document.getElementById('length').value;
+                const words = document.getElementById('words').value;
+                const exclude = getExclude();
+                const complex = document.getElementById('complex').value;
                 const output = document.querySelector('.generator input[type="text"]');
+                output.value = generatePassword(length, words, exclude, complex);
+            });
+
+            
+            // copiar contraseña
+            const copy = document.getElementById('copy-btn');
+
+            copy.addEventListener('click', () => {
+                const output = document.getElementById('output');
                 copiarAlPortapapeles(output.value);
 
                 copy.innerHTML = '✓';
                 setTimeout(() => {
                     copy.innerHTML = '[ ]';
                 }, 1000);
-
-
             });
+
+
+
 
             // funcion para generar contraseña
 
-            function generatePassword(length, words, exclude, security) {
-                console.log(length, words, exclude, security);
-                return 'password';
+            function generatePassword(length, words, exclude, complex) {
+
+                // complex switch
+                if (complex == 0) {
+
+                } else if (complex == 1) {
+                    
+                } else if (complex == 2) {
+
+                } else if (complex == 3) {
+                    
+                } else if (complex == 4) {
+                    
+                } else if (complex == 5) {
+                    
+                }
+                return getRandomWord(length);
             }
 
 
